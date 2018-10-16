@@ -10,13 +10,22 @@
   </head>
 
   <body>
-    <a href='<%= home_page_path %>'>Home Page</a>
-    <%# the line below 👇 generate the same link code as the line above 👆 %>
-    <%= link_to 'Home Page', home_page_path %>
-    |
-    <a href='/hello_world'>Hello World Page</a>
-    <%= link_to 'Hello World Page', hello_world_path %>
-    <hr>
+    <header>
+      <nav>
+        <!-- <a href='<%= home_path %>'>Home Page</a> -->
+        <%# the line below 👇 generate the same link code as the line above 👆 %>
+        <%= link_to 'Home Page', home_path %>
+        |
+        <!-- <a href='/hello_world'>Hello World Page</a> -->
+        <%= link_to 'Hello World Page', hello_world_path %>
+        |
+        <%= link_to "New Question", new_question_path %>
+        |
+        <%= link_to "Questions", questions_path %>
+      </nav>
+      <hr>
+    </header>
+
     <%= yield %>
   </body>
 </html>

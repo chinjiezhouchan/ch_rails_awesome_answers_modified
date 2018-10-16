@@ -10,7 +10,7 @@ class WelcomeController < ApplicationController
     # render plain: 'Hello World'
   end
 
-  def home_page
+  def home
 
   end
 end

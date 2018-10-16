@@ -1,0 +1,32 @@
+<%#
+  Use `form_for` to generate form for an instance of a model.
+  From the given instance, it will figure out if the form
+  is for a new instance or edit an existing one. It will also
+  determine the names that should be used from the instance's
+  class.
+  
+  It will add an hidden input holding an authenticity_token
+  identifying the form as being from this Rails application.
+  This is a security measure to prevent other computers and servers
+  from making POST, DELETE, PATCH and PUT requests to our server.
+%>
+
+<%= form_for(@question) do |form| %>
+  <% if @question.errors.present? %>
+    <p>
+      <%= @question.errors.full_messages.join(", ") %>
+    </p>
+  <% end %>
+
+  <div>
+    <%= form.label :title %> <br>
+    <%= form.text_field :title %>
+  </div>
+
+  <div>
+    <%= form.label :body %> <br>
+    <%= form.text_area :body %>
+  </div>
+
+  <%= form.submit %>
+<% end %>
