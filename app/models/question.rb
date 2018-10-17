@@ -2,6 +2,33 @@
 # Rails uses meta programming to add attr_accessor to all associated table's columns
 # in this those will be: id, title, body, view_count, created_at, updated_at
 class Question < ApplicationRecord
+  has_many :answers
+
+  # `has_many :answers` adds the following instance methods
+  # to the Question model:
+
+  # answers
+  # answers<<(object, ...)
+  # answers.delete(object, ...)
+  # answers.destroy(object, ...)
+  # answers=(objects)
+  # answer_ids
+  # answer_ids=(ids)
+  # answers.clear
+  # answers.empty?
+  # answers.size
+  # answers.find(...)
+  # answers.where(...)
+  # answers.exists?(...)
+  # answers.build(attributes = {}, ...)
+  # answers.create(attributes = {})
+  # answers.create!(attributes = {})
+  # answers.reload
+
+  # Association instance methods can be used as part
+  # of an Active Record query chain, for example:
+  # q.answers.where("id > ?", 1).order(body: :desc).first
+
   validates :title, presence: true,
   uniqueness: { message: 'must be unique!!' }
 
@@ -43,7 +70,6 @@ class Question < ApplicationRecord
   # end
 
   private
-
   def set_default_view_count
     # If you are writing to an attribute accessor, you
     # must prefix with `self.` which do not have to do

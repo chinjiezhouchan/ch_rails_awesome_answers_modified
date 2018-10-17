@@ -37,8 +37,21 @@ class QuestionsController < ApplicationController
 
   def show
     @question = Question.find params[:id]
-    @question.view_count += 1
-    @question.save
+    @answers = @question.answers.order(created_at: :desc)
+    @answer = Answer.new
+
+    # @question.view_count += 1
+    # @question.save
+
+    # Use `update_columns` SPARINGLY. It's an alternative
+    # to `update` that will skip validations, lifecycle callbacks
+    # updating the `updated_at` column. It directly does the
+    # update on the db while skipping the normal active record
+    # steps.
+
+    @question.update_columns(
+      view_count: @question.view_count + 1
+    )
   end
 
   def destroy
