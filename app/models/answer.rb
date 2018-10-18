@@ -12,6 +12,7 @@ class Answer < ApplicationRecord
   # It can be disabled by passing the argument
   # `optional: true` to the `belongs_to` method.
   belongs_to :question#, optional: true
+  belongs_to :user
 
   # The following instance methods are added to
   # the Answer model by the line `belongs_to :question`:

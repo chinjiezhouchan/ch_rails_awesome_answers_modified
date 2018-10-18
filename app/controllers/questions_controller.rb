@@ -4,6 +4,8 @@ class QuestionsController < ApplicationController
   # creates the response to send back to
   # the client (i.e browser).
 
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
+
   def new
     @question = Question.new
     # res.send({ a: 1 })
@@ -19,6 +21,7 @@ class QuestionsController < ApplicationController
     # render json: question_params
 
     @question = Question.new question_params
+    @question.user = current_user
 
     if @question.save
       redirect_to question_path(@question.id)

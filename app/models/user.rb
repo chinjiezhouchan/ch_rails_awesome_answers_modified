@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  has_many :questions, dependent: :nullify
+  has_many :answers, dependent: :nullify
   # has_secure_password is built-in with rails and it adds password hashing feature
   # to your model.
   # it automatically adds attribute accessors for password and password_confirmation
@@ -14,5 +16,9 @@ class User < ApplicationRecord
   validates :email, presence: true,
                     uniqueness: true,
                     format: VALID_EMAIL_REGEX
+
+  def full_name
+    "#{first_name} #{last_name}".strip
+  end
 
 end

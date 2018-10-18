@@ -2,6 +2,7 @@
 # Rails uses meta programming to add attr_accessor to all associated table's columns
 # in this those will be: id, title, body, view_count, created_at, updated_at
 class Question < ApplicationRecord
+  belongs_to :user
   has_many :answers
 
   # `has_many :answers` adds the following instance methods
