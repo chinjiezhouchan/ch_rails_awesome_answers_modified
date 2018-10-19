@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
 
   def authenticate_user!
     unless user_signed_in?
-      flash[:alert] = 'You must sign in or sign up first!'
+      flash[:danger] = 'You must sign in or sign up first!'
       redirect_to new_sessions_path
     end
   end

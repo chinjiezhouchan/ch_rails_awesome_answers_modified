@@ -36,7 +36,7 @@ class AnswersController < ApplicationController
 
   def authorize_user!
     unless can? :crud, @answer
-      flash[:alert] = "Access Denied"
+      flash[:danger] = "Access Denied"
       redirect_to home_path
     end
   end

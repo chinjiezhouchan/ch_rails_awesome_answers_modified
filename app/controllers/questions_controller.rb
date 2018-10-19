@@ -88,7 +88,7 @@ class QuestionsController < ApplicationController
     # We add a ! to the name of this method as convention, because it can
     # mutate the `response` object of our controller.
     unless can? :crud, @question
-      flash[:alert] = "Access Denied"
+      flash[:danger] = "Access Denied"
       redirect_to home_path
     end
   end
