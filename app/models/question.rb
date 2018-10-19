@@ -3,7 +3,16 @@
 # in this those will be: id, title, body, view_count, created_at, updated_at
 class Question < ApplicationRecord
   belongs_to :user
-  has_many :answers
+
+  # When deleting the instance of a model with associated rows (dependents),
+  # the foreign key constraint will prevent it from being deleted. We can
+  # tell active to first delete the dependents before the deleting the
+  # model instance. This is what the `dependent: :destroy` argument does
+  # with the `has_many` method.
+
+  # Use `dependent: :nullify` to instead set the foreign key column to `NULL`
+  # of the dependent instead of deleting.
+  has_many :answers, dependent: :destroy
 
   # `has_many :answers` adds the following instance methods
   # to the Question model:

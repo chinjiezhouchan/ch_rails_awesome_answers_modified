@@ -5,6 +5,8 @@ class QuestionsController < ApplicationController
   # the client (i.e browser).
 
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
+  before_action :find_question, only: [:show, :edit, :update, :destroy]
+  before_action :authorize_user!, only: [:edit, :update, :destroy]
 
   def new
     @question = Question.new
@@ -39,7 +41,6 @@ class QuestionsController < ApplicationController
   end
 
   def show
-    @question = Question.find params[:id]
     @answers = @question.answers.order(created_at: :desc)
     @answer = Answer.new
 
@@ -58,19 +59,15 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-    @question = Question.find params[:id]
     @question.destroy
 
     redirect_to questions_path
   end
 
   def edit
-    @question = Question.find params[:id]
   end
 
   def update
-    @question = Question.find params[:id]
-
     if @question.update question_params
       redirect_to question_path(@question.id)
     else
@@ -81,5 +78,18 @@ class QuestionsController < ApplicationController
   private
   def question_params
     params.require(:question).permit(:title, :body)
+  end
+
+  def find_question
+    @question = Question.find params[:id]
+  end
+
+  def authorize_user!
+    # We add a ! to the name of this method as convention, because it can
+    # mutate the `response` object of our controller.
+    unless can? :crud, @question
+      flash[:alert] = "Access Denied"
+      redirect_to home_path
+    end
   end
 end

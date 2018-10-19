@@ -1,5 +1,7 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!, only: [:create, :destroy]
+  before_action :find_answer, only: [:destroy]
+  before_action :authorize_user!, only: [:destroy]
 
   def create
     @question = Question.find params[:question_id]
@@ -26,5 +28,16 @@ class AnswersController < ApplicationController
   private
   def answer_params
     params.require(:answer).permit(:body)
+  end
+
+  def find_answer
+    @answer = Answer.find params[:id]
+  end
+
+  def authorize_user!
+    unless can? :crud, @answer
+      flash[:alert] = "Access Denied"
+      redirect_to home_path
+    end
   end
 end
