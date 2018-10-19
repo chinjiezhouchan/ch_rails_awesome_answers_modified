@@ -48,7 +48,8 @@ gem 'cancancan'
 # generally speaking, you don't need to restart Rails when making changes, one of the
 # exception to this rule, is making changes to the `Gemfile`
 gem 'cowsay'
-
+gem 'jquery-rails'
+gem 'bootstrap'
 gem 'pry-rails'
 
 # Reduces boot times through caching; required in config/boot.rb
