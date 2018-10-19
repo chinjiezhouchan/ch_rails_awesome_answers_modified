@@ -11,7 +11,8 @@ super_user = User.create(
   first_name: "Jon",
   last_name: "Snow",
   email: "js@winterfell.gov",
-  password: PASSWORD
+  password: PASSWORD,
+  admin: true
 )
 
 10.times do

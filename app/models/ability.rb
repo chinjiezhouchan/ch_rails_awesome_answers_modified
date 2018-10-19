@@ -6,12 +6,16 @@ class Ability
 
     # Define abilities for the passed in user here. For example:
     #
-    #   user ||= User.new # guest user (not logged in)
-    #   if user.admin?
-    #     can :manage, :all
-    #   else
-    #     can :read, :all
-    #   end
+    user ||= User.new # guest user (not logged in)
+    if user.admin?
+      # :manage is a special action that acts as all actions.
+      # It's like alias that's be set to all existing actions and
+      # all future actions.
+      can :manage, :all
+      # :all is a special resource that acts as all resources.
+    else
+      can :read, :all
+    end
     #
 
     # If you pass :manage it will apply to every action. Other common actions
