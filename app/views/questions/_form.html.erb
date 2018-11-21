@@ -28,5 +28,24 @@
     <%= form.text_area :body, class: "form-control" %>
   </div>
 
+  <div class="selectize-control multi">
+    <%= form.label :tag_names %>
+    <%= form.text_field :tag_names, class: "form-control" %> 
+  <div>
+
   <%= form.submit class: "btn btn-outline-primary" %>
 <% end %>
+
+<script>
+  $("#question_tag_names").selectize({
+    delimiter: ',',
+    persist: false,
+    labelField: "name",
+    valueField: "name",
+    searchField: "name",
+    options: <%= Tag.select(:name).to_json(except: [:id]).html_safe %>,
+    create: function(input) {
+        return { name: input }
+    }
+});
+</script>

@@ -37,6 +37,28 @@ module AwesomeAnswers
       # Don't create assets files when using the
       # generator
       g.assets = false
+
+      # This tells Rails' ActiveJob to use the gem
+      # "delayed_job" to manage our job queue.
+      config.active_job.queue_adapter = :delayed_job
+
+      config.middleware.insert_before(0, Rack::Cors) do 
+        # Pass a block for configuring Rack-Cors -> These tell what conditions a CORS request must satisfy before the server allows it.
+        allow do
+          # origins specifies which hosts we allow to make CORS requests to our Rails server.
+          # I'm serving my files, but the error was, "origins are null"
+          origins "localhost:3030", "localhost:3001"
+          resource(
+            # First arg specifies that only those routes with /api/ will accept CORS requests. Not the regular routes /questions, but api/questions.
+            "/api/*",
+            # 
+            headers: :any,
+            credentials: true,
+            # Third arg here is the HTTP methods the requests may use to get CORS requests.
+            methods: [:get, :post, :delete, :patch, :put, :options]
+          )
+        end
+      end
     end
   end
 end

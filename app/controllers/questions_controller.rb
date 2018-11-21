@@ -33,16 +33,31 @@ class QuestionsController < ApplicationController
   end
 
   def index
+    if params[:tag]
+      @tag = Tag.find_or_initialize_by(name: params[:tag])
+      @questions = @tag.questions.order(created_at: :desc)
+    else 
+
     # Instance variables (e.g @questions) in actions can be
     # used in the templates that are rendered by the action.
     # Example: We can use @question inside of the
     # questions index template.
-    @questions = Question.all.order(created_at: :desc)
+      @questions = Question.all.order(created_at: :desc)
+    end
+
+    # So far, we've almost ex
+    # Rails lets you render different formats like JSON / TEXT/ CSV / EXCEL/ PDF, tc. depending on the way you're generating the respones, for instance to generate PFD you will need to use a GEM that can generate PDF and Rails will help serve it for you.
+    respond_to do |format|
+      format.html { render } # this will render `views/questions/index.html.erb`
+      format.json { render json: @questions }
+      format.text { render plain: "Hello World!" }
+    end
   end
 
   def show
     @answers = @question.answers.order(created_at: :desc)
     @answer = Answer.new
+    @like = @question.likes&.find_by(user: current_user)
 
     # @question.view_count += 1
     # @question.save
@@ -75,9 +90,13 @@ class QuestionsController < ApplicationController
     end
   end
 
+  def liked
+    @questions = current_user.liked_questions.order("likes.created_at DESC")
+  end
+
   private
   def question_params
-    params.require(:question).permit(:title, :body)
+    params.require(:question).permit(:title, :body, :tag_names)
   end
 
   def find_question

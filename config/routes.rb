@@ -1,5 +1,34 @@
 Rails.application.routes.draw do
   
+  match(
+    "/delayed_job",
+    to: DelayedJobWeb,
+    anchor: false,
+    via: [:get, :post]
+  )
+  
+  resources :job_posts, only: [:new, :create, :show, :destroy, :update]
+
+  # GET -> /api/v1/questions -> Api::V1::QuestionsController / index action
+  # get '/api/v1/questions', { to: 'api/v1/questions#index' }
+  # The following matches "folder/folder/controller" like our API itself
+  namespace :api, defaults: { format: :json } do
+    namespace :v1 do
+      resources :questions, only: [:index, :show, :create, :delete]
+
+      # If we instead did `resources`, our destroy route would take an id. But for sessions, we don't need an id, we just need to nullify the session.
+      resource :sessions, only: [:create, :destroy]
+      resources :users, only: [] do
+        # A custom route inside users.
+        # On collection means the action is on the entire collection of users.
+        # /api/v1/users/current
+        get :current, on: :collection
+        # /api/v1/users/:question_id/current <- default
+        # /api/v1/users/:id/current <- on: :member
+      end
+    end
+  end
+
   # post(
   #   "/questions/:question_id/answers",
   #   to: "answers#create",
@@ -11,7 +40,33 @@ Rails.application.routes.draw do
     # Routes nested in a resource will get
     # prefixed with the resources path and its
     # URL param for its `id` (e.g. /questions/:question_id)
+    
+    # /questions/liked
+    # You don't want /questions/:question_id/liked because this implies you're still looking up a single question, instead of getting all questions you liked.
+
+    # Use the "on" named argument to specify how a nested route behaves relative to its parent.
+
+    # `on: :collection` means that it acts on the entire
+    # resource. All questions in this case. `new` & `create`
+    # act on the collection.
+
+    # `on: :member` means that it acts on a single
+    # resource. A single question this case. `edit`, `destroy`,
+    # `show` and `update` are all member routes.
+
+    # option: on: :member, or on: :collection. Collection should make the :question_id disappear.
+
+  
+    get(:liked, on: :collection)
+
     resources :answers, only: [ :create, :destroy ]
+    resources :likes, shallow: true, only: [:create, :destroy]
+      # The `shallow: true` named argument will separate routes that require the parent from those that don't.
+      # Routes that require the parent will not change, e.g. new, index, create.
+      # Rails will take the parent prefix off routes that don't need it, e.g. show, edit, update, destroy.
+      
+      # Example:
+      # /questions/10/likes/9/edit becomes /likes/9/edit 
   end
   # `resources` will generate all CRUD routes for a specified
   # name (e.g. questions). It assumes that there's controller with

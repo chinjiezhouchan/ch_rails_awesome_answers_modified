@@ -1,0 +1,38 @@
+<!--
+Limitations of using HTML for emails:
+1) Email content can't contain CSS files or JS files. 
+2) JS will not be executed.
+3) We can still write CSS with <style> tags or inline style (attributes).
+
+Generally we will have far fewer HTML and CSS features.
+
+Many mail viewers will just render it in text rather than HTML.
+-->
+
+<h1>Hi, <%= @question_owner.full_name %></h1>
+
+<p>
+  <%= @answer.user.full_name %> answered your question titled: <br>
+  <q><%= @question.title %></q>
+</p>
+
+<p>
+  The answer is: <br>
+  <q><%= @answer.body %></q>
+</p>
+
+<!--
+You need to use the _path functions for your links, because if you used the actual path within your server, your end-user's mailer will assume it's the path within THEIR OWN server or domain.
+-->
+<%= link_to("Click here to view your question",  question_url(@question, anchor: dom_id(@answer)),
+
+# The name argument "anchor" can be used to append its value
+  # the end of the generated path or url with a hash (i.e #)
+
+  # For example, the above might generate:
+  # http://localhost:3000/questions/56#answer_2839
+) %>
+
+
+<% #host: https://www.example.com %>
+<p>Cheers, <br> Awesome Answers Team</p>

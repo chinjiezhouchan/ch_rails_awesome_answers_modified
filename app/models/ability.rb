@@ -56,5 +56,15 @@ class Ability
     can(:crud, Answer) do |answer|
       user == answer.user
     end
+
+    can(:crud, JobPost) do |job_post|
+      user == job_post.user
+    end
+
+    can(:like, Question) do |question|
+      # If it was just user != question.user, our current_user method assigns User.new, which is a guest. So we need user.persisted? as well
+      user.persisted? && user != question.user
+    end
+    
   end
 end

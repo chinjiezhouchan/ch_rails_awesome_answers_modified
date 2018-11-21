@@ -1,11 +1,15 @@
 # Cleaning up existing data
+Tagging.delete_all
+Tag.delete_all
+JobPost.delete_all
+Like.delete_all
 Answer.delete_all
 Question.delete_all
 User.delete_all
 # DELETE FROM questions;
 
 PASSWORD = "supersecret"
-NUM_OF_QUESTIONS = 100
+NUM_OF_QUESTIONS = 20
 
 super_user = User.create(
   first_name: "Jon",
@@ -30,6 +34,14 @@ end
 users = User.all
 puts Cowsay.say("Generated #{users.count} users", :sheep)
 
+20.times do
+  Tag.create(
+    name: Faker::Book.genre
+  )
+end
+
+tags = Tag.all
+
 NUM_OF_QUESTIONS.times do
   q = Question.create(
     title: Faker::Hacker.say_something_smart,
@@ -38,8 +50,13 @@ NUM_OF_QUESTIONS.times do
     user: users.sample
   )
 
+  # You can assign an array-like object of a bunch of models 
+  q.likers = users.shuffle.slice(0, rand(users.count))
+
+  q.tags = tags.shuffle.slice(0, rand(tags.count / 2))
+
   if q.valid?
-    rand(0..15).times do
+    rand(0..8).times do
       q.answers << Answer.new(
         body: Faker::GreekPhilosophers.quote,
         user: users.sample

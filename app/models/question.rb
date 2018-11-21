@@ -4,6 +4,16 @@
 class Question < ApplicationRecord
   belongs_to :user
 
+  # So, 1) Ask yourself which end of the many-to-many this is. -> Questions.  Many Questions have many Tags.
+  # 2) First define the join table in the middle.
+  has_many :taggings, dependent: :destroy
+  # You can omit `,source: tag` if your resource name is the plural of the source model name. 
+  # You only need to specify it if you named your resource different, e.g. likers vs users.
+  has_many :tags, through: :taggings#, source: :tag
+  
+  has_many :likes, dependent: :destroy
+  has_many :likers, through: :likes, source: :user
+
   # When deleting the instance of a model with associated rows (dependents),
   # the foreign key constraint will prevent it from being deleted. We can
   # tell active to first delete the dependents before the deleting the
@@ -78,6 +88,28 @@ class Question < ApplicationRecord
   # def self.search(query)
   #   where("title ILIKE ? OR body ILIKE ?", "%#{query}%", "%#{query}%")
   # end
+
+  # This is a virtual column. It does not acutally exist in the table, but it's as if it does.
+  # form_for in the views is looking for the method. It doesn't have to be a column. Because Rails' ActiveRecord normally makes methods for each of the columns - attribute accessors.
+  def tag_names
+    # This gets the array.
+    self.tags.map{ |t| t.name }.join(",")
+  end
+
+
+  # Appending = at the end of a method name, allows you to implement a "setter". A setter is a method that is assignable.
+  # a = 1
+  # q.tag_names = "stuff,yo"
+
+
+  # This is like implementing an attribute writer, but we want it to do more than an attr_writer. We want this to add the tags to the Tags database.
+  def tag_names=(rhs)
+
+    # Assign to the tags of the model instance (an individual product) all the tags we find, when we query the database with the names of all the tags.
+    self.tags = rhs.strip.split(/\s*,\s*/).map do | tag_name|
+      Tag.find_or_initialize_by(name: tag_name)
+    end
+  end
 
   private
   def set_default_view_count

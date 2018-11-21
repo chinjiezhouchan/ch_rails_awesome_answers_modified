@@ -11,6 +11,20 @@ class AnswersController < ApplicationController
     @answer.user = current_user
 
     if @answer.save
+
+      # Say we want to notify the question.user that someone answered them:
+      if @question.user.present?
+        # AnswerMailer
+        #   .notify_question_owner(@answer)
+        #   .deliver
+
+        AnswerMailer
+          .notify_question_owner(@answer)
+          .deliver_later
+            # Using `deliver_later` instead of `deliver` will send the main asynchronously using ActiveJob.
+            # This means a row will be added for this mail in the delayed_job queue table. As soon as a worker is ready, the mail will be sent. 
+      end
+
       redirect_to question_path(@question)
     else
       @answers = @question.answers.order(created_at: :desc)
@@ -19,10 +33,18 @@ class AnswersController < ApplicationController
   end
 
   def destroy
+ 
     @answer = Answer.find params[:id]
     @answer.destroy
 
-    redirect_to question_path(@answer.question.id)
+    # https://api.rubyonrails.org/classes/ActionController/Redirecting.html
+    # If you are using XHR requests other than GET or POST and redirecting after
+    # the request then some browsers will follow the redirect using the original
+    # request method. This may lead to undesirable behavior such as a double DELETE.
+    # To work around this you can return a 303 See Other status code which
+    # will be followed using a GET request.
+    
+    redirect_to(question_path(@answer.question.id), status: 303) # SEE OTHER
   end
 
   private

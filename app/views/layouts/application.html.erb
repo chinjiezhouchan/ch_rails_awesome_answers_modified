@@ -6,7 +6,15 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag    'application', media: 'all' %>
+    
+    <!--
+      The following creates a <script> tag that loads the application.js file from app/assets/javascripts.
+    -->
     <%= javascript_include_tag 'application' %>
+    <!--
+    The following creates a <script> tag that loads the application.js file from app/javascripts/pack. Best to transition everything to this if you want to make a Rails - React project.
+    -->
+    <%= javascript_pack_tag "application" %>
   </head>
 
   <body>
@@ -24,6 +32,8 @@
         <%= link_to "Questions", questions_path %>
 
         <% if user_signed_in? %>
+          |
+          <%= link_to "Liked Questions", liked_questions_path %>
           Hello <%= current_user.first_name %>
           <%= link_to 'Sign Out', sessions_path, method: :delete %>
         <% else %>
